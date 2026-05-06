@@ -1,0 +1,10 @@
+priorité: connexions avec github -  >git init, git add, git commit -m, git push, etc
+
+index du site: présentation + option de connexion
+si utilisateur non connecté, redirection vers index.php peu importe IP, sauf si administrateur (IP hôte ou 127.0.0.1)
+options de connexion/déconnexion (si interaction avec déconnexion, alors redirection vers index.php)
+sql: stockage des mots de passe hashés (via password_hash() pour contrer les décryptages) -> à mettre dans la table users
+erreur mot de passe ou mauvaise adresse email: même message d'erreur.
+
+PHPmyadmin: database gestion_todo ; tables users, taches
+créer un dump sql, à rendre dans README.txt (avec au moins les identifiants d'un utilisateur)

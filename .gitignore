@@ -1,0 +1,7 @@
+config.php
+.vscode/
+.idea/
+vendor/
+node_modules/
+.log
+.tmp
