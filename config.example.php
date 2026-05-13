@@ -1,14 +1,18 @@
 <?php
-$host = 'localhost';
-$dbname = 'gestion_fournisseurs';
-$username = 'root';
-$password = '';
+define('DB_HOST', 'localhost');
+define('DB_NAME', 'gestion_todo');
+define('DB_USER', 'nom d\'utilisateur');
+define('DB_PASS', 'mot de passe');
 
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", 
-                   $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch(PDOException $e) {
-    die("Erreur de connexion : " . $e->getMessage());
+function getPDO(): PDO {
+    static $pdo = null;
+
+    if ($pdo === null) {
+        $dsn = 'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8mb4';
+        $pdo = new PDO($dsn, DB_USER, DB_PASS, [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        ]);
+    }
+
+    return $pdo;
 }
-?>

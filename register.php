@@ -1,2 +1,3 @@
 <?php
-require_once 'includedb.php';
+require_once 'config.php';
+$pdo = getPDO();
