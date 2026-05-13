@@ -1,4 +1,5 @@
 config.php
+test_hash.php
 .vscode/
 .idea/
 vendor/
