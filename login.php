@@ -7,13 +7,13 @@ $pdo = getPDO();
 $_SESSION['user_id'] = $user['id'];
 
 
-$error = 'Mot de passe ou email incorrect';
+$error = '';
 
 // Traitement du formulaire (on remplira cette partie après)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     //récupérer email + mot de passe ;
     //chercher utilisateur en base ;
-    // vérifier mdp ; $_SESSION['user_id'] puis redirection si OK, sinon $error
+    //vérifier mdp ; $_SESSION['user_id'] puis redirection si OK, sinon remplir var $error avec l'erreur
 }
 
 ?>
@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
 
     <main>
-        <h1>Connexion</h1>
+        <h1>Connexion + test synchro</h1>
 
         <?php if (!empty($error)): ?>
             <p class="error"><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></p>
