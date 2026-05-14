@@ -5,6 +5,7 @@ $pdo = getPDO();
 
 session_start();
 if (!isset($_SESSION['user_id'])) {
-    // redirection vers login
+    header('Location: login.php');
+    exit;
 }
 $userId = $_SESSION['user_id'];
