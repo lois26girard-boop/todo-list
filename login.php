@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once 'config.php';
 
 if (isset($_SESSION['user_id'])) {
@@ -19,15 +20,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($email === '' || $password === '') {
         $error = 'Identifiants incorrects.';
     } else {
-    $stmt = $pdo->prepare('SELECT id, password_hash FROM users WHERE email = :email');
-    $stmt->execute([':email' => $email]);
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
-    if ($user && password_verify($password, $user['password_hash'])) {
-        $_SESSION['user_id'] = $user['id'];
-        header('Location: index.php');
-        exit;
-    } else {
-        $error = 'Identifiants incorrects.';
+        $stmt = $pdo->prepare('SELECT id, password_hash FROM users WHERE email = :email');
+        $stmt->execute([':email' => $email]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($user && password_verify($password, $user['password_hash'])) {
+            $_SESSION['user_id'] = $user['id'];
+            header('Location: index.php');
+            exit;
+        } else {
+            $error = 'Identifiants incorrects.';
+        }
     }
 }
 
