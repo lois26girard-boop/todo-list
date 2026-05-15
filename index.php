@@ -11,4 +11,6 @@ if (!isset($_SESSION['user_id'])) {
 }
 $userId = $_SESSION['user_id'];
 ?>
+
+<a href="logout.php">Déconnexion</a>
 <p>Ca fonctionne !</p>
