@@ -8,7 +8,7 @@ if (isset($_SESSION['user_id'])) {
 }
 
 $pdo = getPDO();
-$_SESSION['user_id'] = $user['id'];
+
 
 
 $error = '';
