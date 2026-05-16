@@ -44,7 +44,7 @@ $userId = $_SESSION['user_id'];
             <label for="sort-by">Trier par :</label>
             <select id="sort-by">
             <option value="created_at">Date de création</option>
-                <option value="due_date">Date d’échéance</option>
+                <option value="due_date">Date d'échéance</option>
                 <option value="priority">Priorité</option>
             </select>
         </section>
