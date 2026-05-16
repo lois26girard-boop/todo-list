@@ -25,9 +25,29 @@ $userId = $_SESSION['user_id'];
         <a href="logout.php">Déconnexion</a>
         <h1>Mes tâches</h1>
 
-        <!-- filtres + pagination -->
-        <!-- liste des tâches -->
+        <section id="tasks-filters">
+            <label for="filter-status">Statut :</label>
+            <select id="filter-status">
+                <option value="all">Toutes</option>
+                <option value="active">En cours</option>
+                <option value="done">Terminées</option>
+            </select>
 
+            <label for="filter-priority">Priorité :</label>
+            <select id="filter-priority">
+                <option value="all">Toutes</option>
+                <option value="low">Basse</option>
+                <option value="normal">Normale</option>
+                <option value="high">Haute</option>
+            </select>
+
+            <label for="sort-by">Trier par :</label>
+            <select id="sort-by">
+            <option value="created_at">Date de création</option>
+                <option value="due_date">Date d’échéance</option>
+                <option value="priority">Priorité</option>
+            </select>
+        </section>
         <section id="tasks-section">
             <ul id="tasks-list">
                 <!-- tâches en js -->
