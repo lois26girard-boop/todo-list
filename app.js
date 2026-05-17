@@ -132,14 +132,9 @@ function renderTasks(tasks) {
             li.classList.add('task-done');
         }
 
-        if (Number(task.is_done) === 1) {
-            li.classList.add('task-done');
-        }
-
         if (task.due_date && Number(task.is_done) === 0) {
             const dueDate = new Date(task.due_date);
             dueDate.setHours(0, 0, 0, 0);
-
             if (dueDate < today) {
                 li.classList.add('task-late');
             }
@@ -152,6 +147,7 @@ function renderTasks(tasks) {
         metaEl.classList.add('task-meta');
         metaEl.textContent = ` - échéance : ${task.due_date ?? 'aucune'} - priorité : ${task.priority}`;
 
+        li.appendChild(checkbox);
         li.appendChild(titleEl);
         li.appendChild(metaEl);
 
