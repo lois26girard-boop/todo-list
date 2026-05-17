@@ -48,7 +48,7 @@ function listTasks(PDO $pdo, int $userId): void {
 }
 
 function toggleDone(PDO $pdo, int $userId): void {
-    // Récupérer le JSON envoyé en POST
+    //récupérer le JSON envoyé en POST
     $data = json_decode(file_get_contents('php://input'), true);
 
     if (!isset($data['id'])) {

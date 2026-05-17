@@ -47,6 +47,7 @@ $userId = $_SESSION['user_id'];
                 <option value="due_date">Date d'échéance</option>
                 <option value="priority">Priorité</option>
             </select>
+            <button id="delete-done-btn">Supprimer les tâches terminées</button>
         </section>
         <section id="tasks-section">
             <ul id="tasks-list">

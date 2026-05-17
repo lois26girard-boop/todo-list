@@ -4,10 +4,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const statusSelect = document.getElementById('filter-status');
     const prioritySelect = document.getElementById('filter-priority');
     const sortSelect = document.getElementById('sort-by');
+    const listEl = document.getElementById('tasks-list');
+    const deleteDoneBtn = document.getElementById('delete-done-btn');
 
     statusSelect.addEventListener('change', applyFiltersAndSort);
     prioritySelect.addEventListener('change', applyFiltersAndSort);
     sortSelect.addEventListener('change', applyFiltersAndSort);
+
+    listEl.addEventListener('change', event => {
+        if (event.target.classList.contains('task-toggle')) {
+            const li = event.target.closest('.task-item');
+            const taskId = li.dataset.taskId;
+            toggleTaskDone(taskId, event.target.checked);
+        }
+    });
+
+    deleteDoneBtn.addEventListener('click', deleteDoneTasks);
 
     chargerTaches();
 });
@@ -109,6 +121,16 @@ function renderTasks(tasks) {
     tasks.forEach(task => {
         const li = document.createElement('li');
         li.classList.add('task-item');
+        li.dataset.taskId = task.id;
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.classList.add('task-toggle');
+        checkbox.checked = Number(task.is_done) === 1;
+
+        if (checkbox.checked) {
+            li.classList.add('task-done');
+        }
 
         if (Number(task.is_done) === 1) {
             li.classList.add('task-done');
@@ -135,4 +157,67 @@ function renderTasks(tasks) {
 
         listEl.appendChild(li);
     });
+}
+
+function toggleTaskDone(taskId, newCheckedValue) {
+    fetch('api.php?action=toggle_done', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ id: taskId })
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erreur HTTP ' + response.status);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (!data.success) {
+                throw new Error('Réponse API invalide');
+            }
+
+            const task = allTasks.find(t => String(t.id) === String(taskId));
+            if (task) {
+                task.is_done = data.is_done;
+            }
+
+            applyFiltersAndSort();
+        })
+        .catch(error => {
+            console.error(error);
+            const li = document.querySelector(`.task-item[data-task-id="${taskId}"]`);
+            if (li) {
+                const checkbox = li.querySelector('.task-toggle');
+                if (checkbox) {
+                    checkbox.checked = !newCheckedValue;
+                }
+            }
+            alert('Erreur lors de la mise à jour de la tâche.');
+        });
+}
+
+function deleteDoneTasks() {
+    if (!confirm('Supprimer toutes les tâches terminées visibles pour cet utilisateur ?')) {
+        return;
+    }
+
+    fetch('api.php?action=delete_done', {
+        method: 'POST'
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erreur HTTP ' + response.status);
+            }
+            return response.json();
+        })
+        .then(data => {
+            allTasks = allTasks.filter(task => Number(task.is_done) === 0);
+            applyFiltersAndSort();
+        })
+        .catch(error => {
+            console.error(error);
+            alert('Erreur lors de la suppression des tâches terminées.');
+        });
 }
