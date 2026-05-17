@@ -13,9 +13,13 @@ $action = $_GET['action'] ?? 'list';
 
 switch ($action) {
     case 'list':
-        //ajouter paramètres de pagination / filtres
         listTasks($pdo, $userId);
         break;
+
+        case 'create':
+        createTask($pdo, $userId);
+        break;
+
 case 'toggle_done':
         toggleDone($pdo, $userId);
         break;
@@ -91,6 +95,60 @@ function toggleDone(PDO $pdo, int $userId): void {
         'success' => true,
         'id'      => $taskId,
         'is_done' => $newIsDone,
+    ]);
+}
+
+function createTask(PDO $pdo, int $userId): void {
+    $data = json_decode(file_get_contents('php://input'), true);
+
+    $title       = trim($data['title'] ?? '');
+    $description = trim($data['description'] ?? '');
+    $dueDate     = $data['due_date'] ?? null;
+    $priority    = $data['priority'] ?? 'normal';
+
+    if ($title === '') {
+        http_response_code(400);
+        echo json_encode(['error' => 'Le titre est obligatoire']);
+        return;
+    }
+
+    if ($dueDate === '') {
+        $dueDate = null;
+    }
+
+    $allowedPriorities = ['low', 'normal', 'high'];
+    if (!in_array($priority, $allowedPriorities, true)) {
+        $priority = 'normal';
+    }
+
+    $stmt = $pdo->prepare(
+        "INSERT INTO tasks (user_id, title, description, due_date, priority, is_done, created_at)
+         VALUES (:user_id, :title, :description, :due_date, :priority, 0, NOW())"
+    );
+
+    $stmt->execute([
+        ':user_id'     => $userId,
+        ':title'       => $title,
+        ':description' => $description !== '' ? $description : null,
+        ':due_date'    => $dueDate,
+        ':priority'    => $priority,
+    ]);
+
+    $id = (int) $pdo->lastInsertId();
+
+    http_response_code(201);
+    echo json_encode([
+        'success' => true,
+        'task' => [
+            'id'          => $id,
+            'user_id'     => $userId,
+            'title'       => $title,
+            'description' => $description !== '' ? $description : null,
+            'due_date'    => $dueDate,
+            'priority'    => $priority,
+            'is_done'     => 0,
+            'created_at'  => date('Y-m-d H:i:s'),
+        ],
     ]);
 }
 

@@ -6,6 +6,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const sortSelect = document.getElementById('sort-by');
     const listEl = document.getElementById('tasks-list');
     const deleteDoneBtn = document.getElementById('delete-done-btn');
+    const taskForm = document.getElementById('task-form');
+    const openModalBtn = document.getElementById('open-task-modal');
+    const closeModalBtn = document.getElementById('close-task-modal');
+    const taskModal = document.getElementById('task-modal');
+
 
     statusSelect.addEventListener('change', applyFiltersAndSort);
     prioritySelect.addEventListener('change', applyFiltersAndSort);
@@ -21,8 +26,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
     deleteDoneBtn.addEventListener('click', deleteDoneTasks);
 
+
+        //ouvrir/fermer le modal
+    openModalBtn.addEventListener('click', () => {
+        taskModal.classList.add('open');
+        taskModal.setAttribute('aria-hidden', 'false');
+        document.getElementById('task-title').focus();
+    });
+
+    closeModalBtn.addEventListener('click', closeTaskModal);
+
+    taskModal.addEventListener('click', event => {
+        if (event.target === taskModal) {
+            closeTaskModal();
+        }
+    });
+
+    taskForm.addEventListener('submit', handleTaskFormSubmit);
+    
     chargerTaches();
+
 });
+
+function closeTaskModal() {
+    const taskModal = document.getElementById('task-modal');
+    taskModal.classList.remove('open');
+    taskModal.setAttribute('aria-hidden', 'true');
+}
+
 
 function chargerTaches() {
     const messageEl = document.getElementById('tasks-message');
@@ -104,7 +135,7 @@ function compareTasks(a, b, sortBy) {
     }
 
     if (sortBy === 'priority') {
-        const order = { haute: 1, normale: 2, basse: 3 };
+        const order = { high: 1, normal: 2, low: 3 };
         return (order[a.priority] || 99) - (order[b.priority] || 99);
     }
 
@@ -215,5 +246,59 @@ function deleteDoneTasks() {
         .catch(error => {
             console.error(error);
             alert('Erreur lors de la suppression des tâches terminées.');
+        });
+}
+
+function handleTaskFormSubmit(event) {
+    event.preventDefault();
+
+    const titleInput = document.getElementById('task-title');
+    const descInput = document.getElementById('task-description');
+    const dueInput = document.getElementById('task-due-date');
+    const prioritySelect = document.getElementById('task-priority');
+
+    const payload = {
+        title: titleInput.value.trim(),
+        description: descInput.value.trim(),
+        due_date: dueInput.value,
+        priority: prioritySelect.value
+    };
+
+    if (!payload.title) {
+        alert('Le titre est obligatoire.');
+        return;
+    }
+
+    fetch('api.php?action=create', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erreur HTTP ' + response.status);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (!data.success || !data.task) {
+                throw new Error('Réponse API invalide');
+            }
+
+            allTasks.push(data.task);
+            applyFiltersAndSort();
+
+            titleInput.value = '';
+            descInput.value = '';
+            dueInput.value = '';
+            prioritySelect.value = 'normal';
+
+            closeTaskModal();
+        })
+        .catch(error => {
+            console.error(error);
+            alert('Erreur lors de la création de la tâche.');
         });
 }

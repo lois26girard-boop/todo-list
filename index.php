@@ -25,6 +25,44 @@ $userId = $_SESSION['user_id'];
         <a href="logout.php">Déconnexion</a>
         <h1>Mes tâches</h1>
 
+        <button id="open-task-modal">Nouvelle tâche</button>
+
+        <div id="task-modal" class="modal" aria-hidden="true">
+            <div class="modal-content">
+                <h2>Nouvelle tâche</h2>
+                <form id="task-form">
+                    <div>
+                        <label for="task-title">Titre</label><br>
+                        <input type="text" id="task-title" name="title" required>
+                    </div>
+
+                    <div>
+                        <label for="task-description">Description (optionnelle)</label><br>
+                     <textarea id="task-description" name="description"></textarea>
+                    </div>
+
+                    <div>
+                        <label for="task-due-date">Date d’échéance</label><br>
+                        <input type="date" id="task-due-date" name="due_date">
+                    </div>
+
+                    <div>
+                        <label for="task-priority">Priorité</label><br>
+                        <select id="task-priority" name="priority">
+                            <option value="low">Basse</option>
+                            <option value="normal" selected>Normale</option>
+                            <option value="high">Haute</option>
+                        </select>
+                    </div>
+
+                    <button type="submit">Ajouter</button>
+                    <button type="button" id="close-task-modal">Annuler</button>
+                </form>
+            </div>
+        </div>
+
+
+        
         <section id="tasks-filters">
             <label for="filter-status">Statut :</label>
             <select id="filter-status">
