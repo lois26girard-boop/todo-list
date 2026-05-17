@@ -176,7 +176,7 @@ function renderTasks(tasks) {
 
         const metaEl = document.createElement('span');
         metaEl.classList.add('task-meta');
-        metaEl.textContent = ` - échéance : ${task.due_date ?? 'aucune'} - priorité : ${task.priority}`;
+        metaEl.textContent = `${task.description} - échéance : ${task.due_date ?? 'aucune'} - priorité : ${task.priority}`;
 
         li.appendChild(checkbox);
         li.appendChild(titleEl);
